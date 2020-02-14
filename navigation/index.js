@@ -1,37 +1,58 @@
 import React from "react";
 import { Image } from "react-native";
-import { createAppContainer } from "react-navigation";
-import { createStackNavigator } from "react-navigation-stack";
+import Icon from "@expo/vector-icons/Ionicons";
+import {
+  createSwitchNavigator,
+  createAppContainer,
+  createDrawerNavigator,
+  createStackNavigator
+} from "react-navigation";
 
-import Welcome from "../screens/Welcome";
-
+import { Welcome, Login, Register, Users } from "../screens";
 import { theme } from "../constants";
 
-const screens = createStackNavigator(
+const DashboardStackNavigator = createStackNavigator(
   {
-    Welcome
+    Welcome: Welcome,
+    Login: Login,
+    Register: Register,
+    Users: Users
   },
   {
-    defaultNavigationOptions: {
-      headerStyle: {
-        height: theme.sizes.base * 4,
-        backgroundColor: theme.colors.white, // or 'white
-        borderBottomColor: "transparent",
-        elevation: 0 // for android
-      },
-      headerBackImage: <Image source={require("../assets/icons/back.png")} />,
-      headerBackTitle: null,
-      headerLeftContainerStyle: {
-        alignItems: "center",
-        marginLeft: theme.sizes.base * 2,
-        paddingRight: theme.sizes.base
-      },
-      headerRightContainerStyle: {
-        alignItems: "center",
-        paddingRight: theme.sizes.base
-      }
+    defaultNavigationOptions: ({ navigation }) => {
+      return {
+        headerLeft: (
+          <Icon
+            style={{ paddingLeft: 10 }}
+            onPress={() => navigation.openDrawer()}
+            name="md-menu"
+            size={30}
+          />
+        ),
+        headerStyle: {
+          height: theme.sizes.base * 4,
+          backgroundColor: theme.colors.white, // or 'white
+          borderBottomColor: "transparent",
+          elevation: 0 // for android
+        },
+        headerBackImage: <Image source={require("../assets/icons/back.png")} />,
+        headerBackTitle: null,
+        headerRightContainerStyle: {
+          alignItems: "center"
+        }
+      };
     }
   }
 );
 
-export default createAppContainer(screens);
+const AppDrawerNavigator = createDrawerNavigator({
+  Dashboard: {
+    screen: DashboardStackNavigator
+  }
+});
+
+const AppSwitchNavigator = createSwitchNavigator({
+  Dashboard: { screen: AppDrawerNavigator }
+});
+
+export default createAppContainer(AppSwitchNavigator);

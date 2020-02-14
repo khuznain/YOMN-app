@@ -1,10 +1,11 @@
 import React, { Component } from "react";
 
-import { Block, Text } from "../components";
+import { Button, Block, Text } from "../components";
 import { theme } from "../constants";
 
 class Welcome extends Component {
   render() {
+    const { navigation } = this.props;
     return (
       <Block>
         <Block center bottom flex={0.4}>
@@ -17,6 +18,23 @@ class Welcome extends Component {
           <Text h3 gray2 style={{ marginTop: theme.sizes.padding / 2 }}>
             Enjoy the experience.
           </Text>
+        </Block>
+        <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
+          <Button gradient onPress={() => navigation.navigate("Login")}>
+            <Text center semibold white>
+              Login
+            </Text>
+          </Button>
+          <Button shadow onPress={() => navigation.navigate("Register")}>
+            <Text center semibold>
+              Signup
+            </Text>
+          </Button>
+          <Button onPress={() => this.setState({ showTerms: true })}>
+            <Text center caption gray>
+              Terms of service
+            </Text>
+          </Button>
         </Block>
       </Block>
     );

@@ -116,6 +116,7 @@ export default class Block extends Component {
       animated,
       wrap,
       style,
+      bg,
       children,
       ...props
     } = this.props;
@@ -125,6 +126,7 @@ export default class Block extends Component {
       flex && { flex },
       flex === false && { flex: 0 }, // reset / disable flex
       row && styles.row,
+      bg && styles[bg],
       column && styles.column,
       center && styles.center,
       middle && styles.middle,
