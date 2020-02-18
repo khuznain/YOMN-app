@@ -1,11 +1,9 @@
 import React from "react";
-import { StyleSheet } from "react-native";
-
+import { SafeAreaView } from "react-navigation";
 import { AppLoading } from "expo";
 import { Asset } from "expo-asset";
 
 import Navigation from "./navigation";
-import { Block } from "./components";
 
 // import all used images
 const images = [];
@@ -38,9 +36,9 @@ export default class App extends React.Component {
     }
 
     return (
-      <Block white>
+      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
         <Navigation />
-      </Block>
+      </SafeAreaView>
     );
   }
 }

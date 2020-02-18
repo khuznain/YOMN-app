@@ -1,11 +1,10 @@
 const colors = {
   accent: "#F3534A",
   primary: "#ff4382",
-  secondary: "#FFE358",
-  tertiary: "#FFE358",
+  secondary: "#ffd900",
   black: "#323643",
   white: "#FFFFFF",
-  gray: "#9DA3B4",
+  gray: "#EFECF4",
   gray2: "#C5CCD6"
 };
 

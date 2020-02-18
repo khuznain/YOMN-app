@@ -10,8 +10,9 @@ class Welcome extends Component {
       <Block>
         <Block center bottom flex={0.4}>
           <Text h1 center bold>
-            Your Home.
+            Your Home
             <Text h1 primary>
+              {" "}
               YOMN.
             </Text>
           </Text>
@@ -19,7 +20,7 @@ class Welcome extends Component {
             Enjoy the experience.
           </Text>
         </Block>
-        <Block middle flex={0.5} margin={[0, theme.sizes.padding * 2]}>
+        <Block middle flex={0.5} margin={[0, theme.sizes.padding]}>
           <Button gradient onPress={() => navigation.navigate("Login")}>
             <Text center semibold white>
               Login

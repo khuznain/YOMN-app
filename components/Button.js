@@ -62,7 +62,7 @@ class Button extends Component {
 
 Button.defaultProps = {
   startColor: theme.colors.primary,
-  endColor: theme.colors.secondary,
+  endColor: theme.colors.primary,
   start: { x: 0, y: 0 },
   end: { x: 1, y: 1 },
   locations: [0.1, 0.9],
@@ -75,7 +75,7 @@ export default Button;
 const styles = StyleSheet.create({
   button: {
     borderRadius: theme.sizes.radius,
-    height: theme.sizes.base * 3,
+    height: 52,
     justifyContent: "center",
     marginVertical: theme.sizes.padding / 3
   },

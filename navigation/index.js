@@ -1,25 +1,18 @@
 import React from "react";
 import { Image } from "react-native";
 import Icon from "@expo/vector-icons/Ionicons";
-import {
-  createSwitchNavigator,
-  createAppContainer,
-  createDrawerNavigator,
-  createStackNavigator
-} from "react-navigation";
+import { createAppContainer, createSwitchNavigator } from "react-navigation";
+import { createStackNavigator } from "react-navigation-stack";
+import { createDrawerNavigator } from "react-navigation-drawer";
 
-import { Welcome, Login, Register, Users } from "../screens";
+import { Welcome, Login, Register, Users, Loading } from "../screens";
 import { theme } from "../constants";
+import SideMenu from "./side-menu";
 
-const DashboardStackNavigator = createStackNavigator(
-  {
-    Welcome: Welcome,
-    Login: Login,
-    Register: Register,
-    Users: Users
-  },
-  {
-    defaultNavigationOptions: ({ navigation }) => {
+const DashboardStackNavigator = createStackNavigator({
+  Users: {
+    screen: Users,
+    navigationOptions: ({ navigation }) => {
       return {
         headerLeft: (
           <Icon
@@ -28,31 +21,44 @@ const DashboardStackNavigator = createStackNavigator(
             name="md-menu"
             size={30}
           />
-        ),
-        headerStyle: {
-          height: theme.sizes.base * 4,
-          backgroundColor: theme.colors.white, // or 'white
-          borderBottomColor: "transparent",
-          elevation: 0 // for android
-        },
-        headerBackImage: <Image source={require("../assets/icons/back.png")} />,
-        headerBackTitle: null,
-        headerRightContainerStyle: {
-          alignItems: "center"
-        }
+        )
       };
     }
+  },
+  defaultNavigationOptions: ({ navigation }) => {
+    return {
+      headerBackImage: <Image source={require("../assets/icons/back.png")} />,
+      headerBackTitle: null,
+      headerRightContainerStyle: {
+        alignItems: "center"
+      }
+    };
   }
+});
+
+const AppContainer = createDrawerNavigator(
+  {
+    Dashboard: {
+      screen: DashboardStackNavigator
+    }
+  },
+  { contentComponent: SideMenu }
 );
 
-const AppDrawerNavigator = createDrawerNavigator({
-  Dashboard: {
-    screen: DashboardStackNavigator
-  }
+const AuthStack = createStackNavigator({
+  Login: Login,
+  Register: Register
 });
 
-const AppSwitchNavigator = createSwitchNavigator({
-  Dashboard: { screen: AppDrawerNavigator }
-});
-
-export default createAppContainer(AppSwitchNavigator);
+export default createAppContainer(
+  createSwitchNavigator(
+    {
+      Loading: Loading,
+      App: AppContainer,
+      Auth: AuthStack
+    },
+    {
+      initialRouteName: "Auth"
+    }
+  )
+);
