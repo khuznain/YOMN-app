@@ -5,36 +5,32 @@ import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
 
-import { Welcome, Login, Register, Users, Loading } from "../screens";
-import { theme } from "../constants";
+import {
+  Welcome,
+  Login,
+  Register,
+  Users,
+  Loading,
+  AddItem,
+  ItemList
+} from "../screens";
 import SideMenu from "./side-menu";
 
-const DashboardStackNavigator = createStackNavigator({
-  Users: {
-    screen: Users,
-    navigationOptions: ({ navigation }) => {
-      return {
-        headerLeft: (
-          <Icon
-            style={{ paddingLeft: 10 }}
-            onPress={() => navigation.openDrawer()}
-            name="md-menu"
-            size={30}
-          />
-        )
-      };
-    }
+const DashboardStackNavigator = createStackNavigator(
+  {
+    Users,
+    AddItem,
+    ItemList
   },
-  defaultNavigationOptions: ({ navigation }) => {
-    return {
-      headerBackImage: <Image source={require("../assets/icons/back.png")} />,
-      headerBackTitle: null,
-      headerRightContainerStyle: {
-        alignItems: "center"
+  {
+    headerMode: "none",
+    defaultNavigationOptions: {
+      cardStyle: {
+        backgroundColor: "transparent"
       }
-    };
+    }
   }
-});
+);
 
 const AppContainer = createDrawerNavigator(
   {
@@ -46,6 +42,7 @@ const AppContainer = createDrawerNavigator(
 );
 
 const AuthStack = createStackNavigator({
+  Welcome: Welcome,
   Login: Login,
   Register: Register
 });
@@ -58,7 +55,20 @@ export default createAppContainer(
       Auth: AuthStack
     },
     {
-      initialRouteName: "Auth"
+      initialRouteName: "App"
     }
   )
 );
+
+// navigationOptions: ({ navigation }) => {
+//   return {
+//     headerLeft: (
+//       <Icon
+//         style={{ paddingLeft: 10 }}
+//         onPress={() => navigation.openDrawer()}
+//         name="md-menu"
+//         size={30}
+//       />
+//     )
+//   };
+// }

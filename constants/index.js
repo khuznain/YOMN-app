@@ -1,7 +1,3 @@
-import * as theme from './theme';
-import * as mocks from './mocks';
+import * as theme from "./theme";
 
-export {
-  theme,
-  mocks,
-};
+export { theme };

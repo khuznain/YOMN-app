@@ -6,9 +6,11 @@ import {
   Dimensions,
   Image,
   FlatList,
+  TouchableOpacity,
+  SafeAreaView,
   TouchableWithoutFeedback
 } from "react-native";
-import { Header, colors } from "react-native-elements";
+import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../constants";
 
 // temporary data until we pull from Firebase
@@ -70,12 +72,16 @@ export default class HomeScreen extends React.Component {
 
   render() {
     return (
-      <View style={styles.container}>
-        {/* <Header
-          backgroundColor="#fcfcfc"
-          leftComponent={{ icon: "menu", color: "#292929" }}
-          centerComponent={{ text: "YOUMN", style: { color: "#292929" } }}
-        /> */}
+      <SafeAreaView style={styles.container}>
+        <View style={styles.header}>
+          <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+            <Ionicons
+              name="md-menu"
+              size={30}
+              color={theme.colors.gray}
+            ></Ionicons>
+          </TouchableOpacity>
+        </View>
         <FlatList
           data={posts}
           contentContainerStyle={styles.listStyle}
@@ -85,7 +91,7 @@ export default class HomeScreen extends React.Component {
           keyExtractor={item => item.id}
           showsVerticalScrollIndicator={false}
         ></FlatList>
-      </View>
+      </SafeAreaView>
     );
   }
 }
@@ -94,6 +100,15 @@ const styles = StyleSheet.create({
   container: {
     flex: 1,
     backgroundColor: "#4d4d4d"
+  },
+  header: {
+    flexDirection: "row",
+    justifyContent: "space-between",
+    paddingHorizontal: 32,
+    paddingVertical: 12,
+    borderBottomWidth: 1,
+    backgroundColor: "#ffff",
+    borderBottomColor: "#D8D9DB"
   },
   listStyle: {
     flex: 1,

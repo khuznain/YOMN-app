@@ -4,7 +4,7 @@ const colors = {
   secondary: "#ffd900",
   black: "#323643",
   white: "#FFFFFF",
-  gray: "#EFECF4",
+  gray: "#505052",
   gray2: "#C5CCD6"
 };
 

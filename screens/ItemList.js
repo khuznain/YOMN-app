@@ -15,7 +15,6 @@ import * as ImagePicker from "expo-image-picker";
 
 export default class PostScreen extends React.Component {
   state = {
-    text: "",
     image: null
   };
 
@@ -54,10 +53,10 @@ export default class PostScreen extends React.Component {
       <SafeAreaView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
-            <Ionicons name="md-arrow-back" size={24} color="#D8D9DB"></Ionicons>
+            <Ionicons name="md-arrow-back" size={24} color="#999"></Ionicons>
           </TouchableOpacity>
-          <TouchableOpacity onPress={this.handlePost}>
-            <Text style={{ fontWeight: "500" }}>Post</Text>
+          <TouchableOpacity onPress={null}>
+            <Text style={{ fontWeight: "500", color: "#999" }}>Add Item</Text>
           </TouchableOpacity>
         </View>
 
