@@ -1,4 +1,5 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   View,
   Text,
@@ -13,13 +14,34 @@ import { InputField } from "../components/formik/InputField";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { theme } from "../constants";
+import { storeUser } from "../redux/user/user.actions";
+import httpServices from "../config/http-services";
+import { ENDPOINTS } from "../config/const";
 
-export default class LoginScreen extends React.Component {
+class LoginScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
 
-  handleLogin = () => {};
+  handleLogin = async (values, { setSubmitting }) => {
+    try {
+      const { data } = await httpServices.post(ENDPOINTS.LOGIN, values);
+      const user = {
+        _id: data.user._id,
+        name: data.user.name,
+        email: data.user.email,
+        image: data.user.image
+      };
+
+      console.log("this is working...", user);
+
+      this.props.storeUser(user);
+    } catch (err) {
+      console.log("Error -> ", err);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   render() {
     LayoutAnimation.easeInEaseOut();
@@ -33,6 +55,7 @@ export default class LoginScreen extends React.Component {
         ></Image>
         <TouchableOpacity
           style={styles.back}
+          hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
           onPress={() => this.props.navigation.goBack()}
         >
           <Ionicons
@@ -43,7 +66,11 @@ export default class LoginScreen extends React.Component {
         </TouchableOpacity>
         <Image
           source={require("../assets/authFooter.png")}
-          style={{ position: "absolute", bottom: -325, right: -225 }}
+          style={{
+            position: "absolute",
+            bottom: -325,
+            right: -225
+          }}
         ></Image>
         <Image
           source={require("../assets/loginLogo.png")}
@@ -61,7 +88,7 @@ export default class LoginScreen extends React.Component {
               .required("This field is required"),
             password: Yup.string().required("This field is required")
           })}
-          onSubmit={() => alert("this is working...")}
+          onSubmit={this.handleLogin}
         >
           {props => (
             <>
@@ -73,7 +100,7 @@ export default class LoginScreen extends React.Component {
                     label="E-Mail"
                   />
                 </View>
-                <View style={{ marginTop: 32 }}>
+                <View style={{ marginTop: 12 }}>
                   <InputField
                     formikKey="password"
                     formikProps={props}
@@ -85,6 +112,8 @@ export default class LoginScreen extends React.Component {
 
               <TouchableOpacity
                 style={styles.button}
+                // loading={props.isSubmitting}
+                disabled={props.isSubmitting}
                 onPress={props.handleSubmit}
               >
                 <Text style={{ color: "#FFF", fontWeight: "500" }}>
@@ -99,7 +128,10 @@ export default class LoginScreen extends React.Component {
                 <Text style={{ color: "#414959", fontSize: 13 }}>
                   Don't have an account?{" "}
                   <Text
-                    style={{ fontWeight: "500", color: theme.colors.primary }}
+                    style={{
+                      fontWeight: "500",
+                      color: theme.colors.primary
+                    }}
                   >
                     Sign up
                   </Text>
@@ -112,6 +144,8 @@ export default class LoginScreen extends React.Component {
     );
   }
 }
+
+export default connect(null, { storeUser })(LoginScreen);
 
 const styles = StyleSheet.create({
   container: {

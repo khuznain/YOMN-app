@@ -34,6 +34,7 @@ export default class RegisterScreen extends React.Component {
         ></Image>
         <TouchableOpacity
           style={styles.back}
+          hitSlop={{ top: 50, bottom: 50, left: 50, right: 50 }}
           onPress={() => this.props.navigation.goBack()}
         >
           <Ionicons
@@ -63,8 +64,6 @@ export default class RegisterScreen extends React.Component {
           </TouchableOpacity>
         </View>
 
-        <View style={styles.errorMessage}></View>
-
         <Formik
           initialValues={{ email: "", password: "" }}
           validationSchema={Yup.object().shape({
@@ -87,22 +86,18 @@ export default class RegisterScreen extends React.Component {
                   />
                 </View>
 
-                <View>
-                  <InputField
-                    formikProps={props}
-                    formikKey="email"
-                    label="E-Mail"
-                  />
-                </View>
+                <InputField
+                  formikProps={props}
+                  formikKey="email"
+                  label="E-Mail"
+                />
 
-                <View style={{ marginTop: 32 }}>
-                  <InputField
-                    formikKey="password"
-                    formikProps={props}
-                    label="Password"
-                    secureTextEntry
-                  />
-                </View>
+                <InputField
+                  formikKey="password"
+                  formikProps={props}
+                  label="Password"
+                  secureTextEntry
+                />
               </View>
 
               <TouchableOpacity
@@ -115,7 +110,7 @@ export default class RegisterScreen extends React.Component {
               </TouchableOpacity>
 
               <TouchableOpacity
-                style={{ alignSelf: "center", marginTop: 32 }}
+                style={{ alignSelf: "center", marginTop: 20 }}
                 onPress={() => this.props.navigation.navigate("Login")}
               >
                 <Text style={{ color: "#414959", fontSize: 13 }}>
@@ -146,7 +141,7 @@ const styles = StyleSheet.create({
     color: "#FFF"
   },
   form: {
-    marginBottom: 48,
+    marginTop: 30,
     marginHorizontal: 30
   },
   inputTitle: {

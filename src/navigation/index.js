@@ -40,11 +40,21 @@ const AppContainer = createDrawerNavigator(
   { contentComponent: SideMenu }
 );
 
-const AuthStack = createStackNavigator({
-  Welcome: Welcome,
-  Login: Login,
-  Register: Register
-});
+const AuthStack = createStackNavigator(
+  {
+    Welcome: Welcome,
+    Login: Login,
+    Register: Register
+  },
+  {
+    headerMode: "none",
+    defaultNavigationOptions: {
+      cardStyle: {
+        backgroundColor: "transparent"
+      }
+    }
+  }
+);
 
 export default createAppContainer(
   createSwitchNavigator(
@@ -54,7 +64,7 @@ export default createAppContainer(
       Auth: AuthStack
     },
     {
-      initialRouteName: "App"
+      initialRouteName: "Auth"
     }
   )
 );

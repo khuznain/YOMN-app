@@ -7,16 +7,8 @@ import axios from "axios";
  */
 
 axios.interceptors.response.use(
-  // Set token to header
-  function(config) {
-    // For incase end point auth
-
-    // Set Token axios header
-    // const token = store.getState().user.access_token;
-    // config.headers.Authorization = token || null;
-    // return config;
-
-    return;
+  response => {
+    return response;
   },
   error => {
     //Expected errors for debugging
