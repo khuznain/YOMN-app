@@ -5,6 +5,7 @@ import {
   StyleSheet,
   TouchableOpacity,
   SafeAreaView,
+  ScrollView,
   Image
 } from "react-native";
 import Constants from "expo-constants";
@@ -53,7 +54,7 @@ export default class PostScreen extends React.Component {
 
   render() {
     return (
-      <SafeAreaView style={styles.container}>
+      <ScrollView style={styles.container}>
         <View style={styles.header}>
           <TouchableOpacity onPress={() => this.props.navigation.goBack()}>
             <Ionicons
@@ -81,46 +82,58 @@ export default class PostScreen extends React.Component {
           {props => (
             <View style={styles.inputContainer}>
               <View>
-                <View>
-                  <InputField
-                    formikProps={props}
-                    formikKey="title"
-                    label="Title"
-                  />
-                </View>
+                <InputField
+                  formikProps={props}
+                  formikKey="title"
+                  label="Title"
+                />
 
-                <View style={{ marginTop: 10 }}>
-                  <InputField
-                    formikProps={props}
-                    formikKey="description"
-                    label="Description"
-                    numberOfLines={4}
-                  />
-                </View>
+                <InputField
+                  formikProps={props}
+                  formikKey="description"
+                  label="Description"
+                  inputStyle={{ height: 100 }}
+                />
 
-                <View style={{ marginTop: 10 }}>
-                  <InputField
-                    formikProps={props}
-                    formikKey="address"
-                    label="Address"
-                  />
-                </View>
+                <InputField
+                  formikProps={props}
+                  formikKey="address"
+                  label="Address"
+                />
+
+                <TouchableOpacity
+                  style={styles.imageContainer}
+                  onPress={this.pickImage}
+                >
+                  <Ionicons
+                    name="md-camera"
+                    size={32}
+                    color={theme.colors.primary}
+                  ></Ionicons>
+
+                  <View style={styles.image}>
+                    <Image
+                      source={{
+                        uri: this.state.image ? this.state.image : undefined
+                      }}
+                      style={{ width: "100%", height: "100%" }}
+                    ></Image>
+                  </View>
+                </TouchableOpacity>
+
+                <TouchableOpacity
+                  style={styles.button}
+                  onPress={props.handleSubmit}
+                >
+                  <Text style={{ color: "#FFF", fontWeight: "500" }}>
+                    Submit
+                  </Text>
+                </TouchableOpacity>
               </View>
             </View>
           )}
         </Formik>
-
-        {/* <TouchableOpacity style={styles.photo} onPress={this.pickImage}>
-          <Ionicons name="md-camera" size={32} color="#D8D9DB"></Ionicons>
-        </TouchableOpacity>
-
-        <View style={{ marginHorizontal: 32, marginTop: 32, height: 150 }}>
-          <Image
-            source={{ uri: this.state.image ? this.state.image : undefined }}
-            style={{ width: "100%", height: "100%" }}
-          ></Image>
-        </View> */}
-      </SafeAreaView>
+      </ScrollView>
     );
   }
 }
@@ -132,7 +145,7 @@ const styles = StyleSheet.create({
   header: {
     flexDirection: "row",
     justifyContent: "space-between",
-    paddingHorizontal: 32,
+    paddingHorizontal: 18,
     paddingVertical: 12,
     borderBottomWidth: 1,
     borderBottomColor: "#D8D9DB"
@@ -141,5 +154,28 @@ const styles = StyleSheet.create({
     marginTop: 30,
     alignSelf: "center",
     width: "90%"
+  },
+  button: {
+    marginTop: 20,
+    backgroundColor: theme.colors.primary,
+    borderRadius: 4,
+    height: 52,
+    alignItems: "center",
+    justifyContent: "center"
+  },
+  imageContainer: {
+    justifyContent: "center",
+    alignItems: "center",
+    borderColor: theme.colors.primary,
+    borderWidth: 0.5,
+    height: 200,
+    width: "100%"
+  },
+  image: {
+    position: "absolute",
+    top: 5,
+    left: 5,
+    right: 5,
+    bottom: 5
   }
 });

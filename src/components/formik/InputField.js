@@ -2,12 +2,18 @@ import React from "react";
 import { View, Text, TextInput, StyleSheet } from "react-native";
 import { theme } from "../../constants";
 
-export const InputField = ({ formikProps, formikKey, label, ...rest }) => {
+export const InputField = ({
+  formikProps,
+  formikKey,
+  label,
+  inputStyle = {},
+  ...rest
+}) => {
   return (
     <View>
       <Text style={styles.inputTitle}>{label}</Text>
       <TextInput
-        style={styles.input}
+        style={[styles.input, inputStyle]}
         onChangeText={formikProps.handleChange(formikKey)}
         onBlur={formikProps.handleBlur(formikKey)}
         autoCapitalize="none"
@@ -23,7 +29,7 @@ export const InputField = ({ formikProps, formikKey, label, ...rest }) => {
 
 const styles = StyleSheet.create({
   inputTitle: {
-    color: "#8A8F9E",
+    color: theme.colors.black,
     fontSize: 10,
     textTransform: "uppercase"
   },
@@ -35,6 +41,7 @@ const styles = StyleSheet.create({
     color: "#161F3D"
   },
   errorText: {
+    marginVertical: 15,
     color: theme.colors.accent
   }
 });

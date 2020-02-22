@@ -1,6 +1,3 @@
-import React from "react";
-import { Image } from "react-native";
-import Icon from "@expo/vector-icons/Ionicons";
 import { createAppContainer, createSwitchNavigator } from "react-navigation";
 import { createStackNavigator } from "react-navigation-stack";
 import { createDrawerNavigator } from "react-navigation-drawer";
@@ -12,7 +9,8 @@ import {
   Users,
   Loading,
   AddItem,
-  ItemList
+  ItemList,
+  UserPost
 } from "../screens";
 import SideMenu from "./side-menu";
 
@@ -20,7 +18,8 @@ const DashboardStackNavigator = createStackNavigator(
   {
     Users,
     AddItem,
-    ItemList
+    ItemList,
+    UserPost
   },
   {
     headerMode: "none",
@@ -59,16 +58,3 @@ export default createAppContainer(
     }
   )
 );
-
-// navigationOptions: ({ navigation }) => {
-//   return {
-//     headerLeft: (
-//       <Icon
-//         style={{ paddingLeft: 10 }}
-//         onPress={() => navigation.openDrawer()}
-//         name="md-menu"
-//         size={30}
-//       />
-//     )
-//   };
-// }

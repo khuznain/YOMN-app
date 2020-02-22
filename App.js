@@ -1,13 +1,17 @@
 import React from "react";
-import { SafeAreaView } from "react-navigation";
 import { AppLoading } from "expo";
 import { Asset } from "expo-asset";
+import { Provider } from "react-redux";
+import { SafeAreaView } from "react-navigation";
+import { PersistGate } from "redux-persist/integration/react";
 
-import Navigation from "./navigation";
+import { persistor, store } from "./src/redux/store";
+import Navigation from "./src/navigation";
 
 // import all used images
 const images = [];
 
+console.disableYellowBox = true;
 export default class App extends React.Component {
   state = {
     isLoadingComplete: false
@@ -36,9 +40,13 @@ export default class App extends React.Component {
     }
 
     return (
-      <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
-        <Navigation />
-      </SafeAreaView>
+      <Provider store={store}>
+        <PersistGate loading={null} persistor={persistor}>
+          <SafeAreaView style={{ flex: 1, backgroundColor: "white" }}>
+            <Navigation />
+          </SafeAreaView>
+        </PersistGate>
+      </Provider>
     );
   }
 }

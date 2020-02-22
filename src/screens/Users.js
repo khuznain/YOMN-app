@@ -56,7 +56,9 @@ posts = [
 export default class HomeScreen extends React.Component {
   renderPost = post => {
     return (
-      <TouchableWithoutFeedback onPress={() => alert("working")}>
+      <TouchableWithoutFeedback
+        onPress={() => this.props.navigation.navigate("UserPost")}
+      >
         <View style={styles.listItem}>
           <Image source={post.avatar} style={styles.avatar} />
           <View style={{ marginLeft: 10, marginTop: 5 }}>
@@ -115,22 +117,26 @@ const styles = StyleSheet.create({
     flexDirection: "column"
   },
   listItem: {
-    maxWidth: Dimensions.get("window").width / 2,
-    flex: 0.5,
-    flexDirection: "row",
+    flexDirection: "column",
+    justifyContent: "center",
+    alignItems: "center",
     backgroundColor: "#292929",
     margin: 5,
     padding: 15,
+    maxWidth: Dimensions.get("window").width / 2,
+    flex: 0.5,
     borderRadius: 5
   },
   avatar: {
-    width: 50,
-    height: 50,
-    borderRadius: 25
+    width: 60,
+    height: 60,
+    borderRadius: 30
   },
   name: {
-    fontSize: 14,
-    fontWeight: "500",
+    fontSize: 16,
+    paddingTop: 10,
+    fontWeight: "400",
+    textAlign: "center",
     color: theme.colors.secondary
   }
 });
