@@ -1,12 +1,12 @@
 import React from "react";
 import { connect } from "react-redux";
+import Toast from "react-native-tiny-toast";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
   Image,
-  StatusBar,
   LayoutAnimation
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,17 +26,17 @@ class LoginScreen extends React.Component {
   handleLogin = async (values, { setSubmitting }) => {
     try {
       const { data } = await httpServices.post(ENDPOINTS.LOGIN, values);
+      console.log("this is working...", data);
       const user = {
         _id: data.user._id,
         name: data.user.name,
         email: data.user.email,
         image: data.user.image
       };
-
-      console.log("this is working...", user);
-
+      Toast.show("Successfully login");
       this.props.storeUser(user);
     } catch (err) {
+      Toast.show("Invalid credentials");
       console.log("Error -> ", err);
     } finally {
       setSubmitting(false);
@@ -48,7 +48,6 @@ class LoginScreen extends React.Component {
 
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content"></StatusBar>
         <Image
           source={require("../assets/authHeader.png")}
           style={{ marginTop: -176, marginLeft: -50 }}
