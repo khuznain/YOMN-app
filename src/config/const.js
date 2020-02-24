@@ -5,5 +5,7 @@ export const BASE_URL = `http://localhost:5000`;
 
 export const ENDPOINTS = {
   LOGIN: `${BASE_URL}/api/users/login`,
-  SIGN_UP: `${BASE_URL}/api/users/signup`
+  SIGN_UP: `${BASE_URL}/api/users/signup`,
+  USERS: `${BASE_URL}/api/users`,
+  USER: `${BASE_URL}/api/items/user`
 };
