@@ -1,10 +1,10 @@
 import React from "react";
+import { connect } from "react-redux";
 import {
   View,
   Text,
   StyleSheet,
   TouchableOpacity,
-  SafeAreaView,
   ScrollView,
   Image
 } from "react-native";
@@ -16,10 +16,13 @@ import * as Yup from "yup";
 import { Formik } from "formik";
 import { theme } from "../constants";
 import { InputField } from "../components/formik/InputField";
+import httpServices from "../config/http-services";
+import { ENDPOINTS } from "../config/const";
 
-export default class PostScreen extends React.Component {
+class PostScreen extends React.Component {
   state = {
-    image: null
+    image: null,
+    imageResult: null
   };
 
   componentDidMount() {
@@ -38,7 +41,31 @@ export default class PostScreen extends React.Component {
     }
   };
 
-  handlePost = () => {};
+  handlePost = async (values, { setSubmitting }) => {
+    let localUri = this.state.imageResult.uri;
+    let filename = localUri.split("/").pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    let formData = new FormData();
+    formData.append("title", values.title);
+    formData.append("description", values.description);
+    formData.append("address", values.address);
+    formData.append("creator", this.props._id);
+    formData.append("image", {
+      uri: localUri,
+      name: filename,
+      type
+    });
+
+    try {
+      const response = await httpServices.post(ENDPOINTS.POST_ITEM, formData);
+      console.log("Response ->", response);
+    } catch (err) {
+      console.log("Err ->", err || err.response);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   pickImage = async () => {
     let result = await ImagePicker.launchImageLibraryAsync({
@@ -48,11 +75,12 @@ export default class PostScreen extends React.Component {
     });
 
     if (!result.cancelled) {
-      this.setState({ image: result.uri });
+      this.setState({ image: result.uri, imageResult: result });
     }
   };
 
   render() {
+    console.log("image picker ->", this.state.image);
     return (
       <ScrollView style={styles.container}>
         <View style={styles.header}>
@@ -64,20 +92,29 @@ export default class PostScreen extends React.Component {
             ></Ionicons>
           </TouchableOpacity>
           <TouchableOpacity onPress={null}>
-            <Text style={{ fontWeight: "500", color: theme.colors.gray }}>
+            <Text
+              style={{
+                fontWeight: "500",
+                color: theme.colors.gray
+              }}
+            >
               Add Item
             </Text>
           </TouchableOpacity>
         </View>
 
         <Formik
-          initialValues={{ title: "", description: "", address: "" }}
+          initialValues={{
+            title: "",
+            description: "",
+            address: ""
+          }}
           validationSchema={Yup.object().shape({
             title: Yup.string().required("This field is required"),
             description: Yup.string().required("This field is required"),
             address: Yup.string().required("This field is required")
           })}
-          onSubmit={() => alert("this is working...")}
+          onSubmit={this.handlePost}
         >
           {props => (
             <View style={styles.inputContainer}>
@@ -137,6 +174,13 @@ export default class PostScreen extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const user = state.user;
+  return user;
+};
+
+export default connect(mapStateToProps)(PostScreen);
 
 const styles = StyleSheet.create({
   container: {

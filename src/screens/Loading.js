@@ -1,5 +1,6 @@
 import React from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
+import { theme } from "../constants";
 
 export default class LoadingScreen extends React.Component {
   componentDidMount() {
@@ -10,7 +11,10 @@ export default class LoadingScreen extends React.Component {
     return (
       <View style={styles.container}>
         <Text>Loading</Text>
-        <ActivityIndicator size="large"></ActivityIndicator>
+        <ActivityIndicator
+          size="large"
+          color={theme.colors.primary}
+        ></ActivityIndicator>
       </View>
     );
   }

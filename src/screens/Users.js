@@ -10,9 +10,10 @@ import {
   SafeAreaView,
   TouchableWithoutFeedback
 } from "react-native";
+
+import httpServices from "../config/http-services";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../constants";
-import httpServices from "../config/http-services";
 import { ENDPOINTS } from "../config/const";
 
 export default HomeScreen = ({ navigation }) => {
@@ -62,7 +63,7 @@ export default HomeScreen = ({ navigation }) => {
   return (
     <SafeAreaView style={styles.container}>
       <View style={styles.header}>
-        <TouchableOpacity onPress={() => this.props.navigation.openDrawer()}>
+        <TouchableOpacity onPress={() => navigation.openDrawer()}>
           <Ionicons
             name="md-menu"
             size={30}

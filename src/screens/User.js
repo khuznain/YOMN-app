@@ -1,14 +1,16 @@
 import React, { useState, useEffect } from "react";
+import Modal from "react-native-modal";
 import {
   View,
   StyleSheet,
   ScrollView,
   Image,
+  FlatList,
   TouchableOpacity
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../constants";
-import { Text, Divider, Block } from "../components";
+import { Text, Divider, Block, EmptyMessage, MapModal } from "../components";
 import httpServices from "../config/http-services";
 import { ENDPOINTS } from "../config/const";
 
@@ -16,6 +18,7 @@ export default User = ({ navigation }) => {
   const [items, setItems] = useState([]);
   const [user] = useState(navigation.state.params);
   const [isLoading, setLoading] = useState(false);
+  const [visibleModal, setVisibleModal] = useState(false);
 
   useEffect(() => {
     getUser();
@@ -25,7 +28,7 @@ export default User = ({ navigation }) => {
     setLoading(true);
     try {
       const { data } = await httpServices.get(`${ENDPOINTS.USER}/${user.id}`);
-      console.log("this is users ->", data);
+      setItems(data.items);
     } catch (err) {
       console.log(err);
     } finally {
@@ -33,9 +36,60 @@ export default User = ({ navigation }) => {
     }
   };
 
+  renderPost = item => {
+    return (
+      <View style={styles.listItem}>
+        <Image
+          style={styles.image}
+          source={{
+            uri: `http://localhost:5000/${item.image}`
+          }}
+        />
+
+        <Text
+          align="center"
+          weight="bold"
+          h3
+          gray
+          style={{ marginVertical: 10 }}
+        >
+          {item.title}
+        </Text>
+
+        <Text align="center" h3 gray>
+          {item.address}
+        </Text>
+
+        <Block row space="around" margin={[20, 0, 0, 0]}>
+          <TouchableOpacity
+            style={[styles.button, { marginLeft: -5 }]}
+            onPress={null}
+          >
+            <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
+          </TouchableOpacity>
+
+          <TouchableOpacity
+            style={[styles.buttonSecondary]}
+            onPress={() => setVisibleModal(true)}
+          >
+            <Text style={{ color: theme.colors.primary, fontWeight: "500" }}>
+              Show Map
+            </Text>
+          </TouchableOpacity>
+          <TouchableOpacity
+            style={[styles.button, { marginRight: -5 }]}
+            onPress={null}
+          >
+            <Text style={{ color: "#FFF", fontWeight: "500" }}>Delete</Text>
+          </TouchableOpacity>
+        </Block>
+        <Divider></Divider>
+      </View>
+    );
+  };
+
   return (
     <ScrollView style={styles.container}>
-      {console.log("state ->", navigation)}
       <View style={styles.header}>
         <TouchableOpacity onPress={() => navigation.goBack()}>
           <Ionicons
@@ -51,48 +105,29 @@ export default User = ({ navigation }) => {
           ></Image>
         </TouchableOpacity>
       </View>
-      <View style={styles.content}>
-        <Image
-          style={styles.image}
-          source={require("../assets/tempImage2.jpg")}
-        />
 
-        <Text
-          align="center"
-          weight="bold"
-          h3
-          gray
-          style={{ marginVertical: 10 }}
-        >
-          This the title
-        </Text>
+      <FlatList
+        data={items}
+        contentContainerStyle={styles.listStyle}
+        showsVerticalScrollIndicator={false}
+        ListEmptyComponent={
+          <EmptyMessage isLoading={isLoading} errorText="No Data Available" />
+        }
+        numColumns={2}
+        renderItem={({ item }) => renderPost(item)}
+        keyExtractor={item => item.id}
+        numColumns={1}
+        showsVerticalScrollIndicator={false}
+      />
 
-        <Text align="center" h3 gray>
-          This the location
-        </Text>
-
-        <Block row space="around" margin={[20, 0, 0, 0]}>
-          <TouchableOpacity
-            style={[styles.button, { marginLeft: -5 }]}
-            onPress={null}
-          >
-            <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
-          </TouchableOpacity>
-
-          <TouchableOpacity style={[styles.buttonSecondary]} onPress={null}>
-            <Text style={{ color: theme.colors.primary, fontWeight: "500" }}>
-              Show Map
-            </Text>
-          </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { marginRight: -5 }]}
-            onPress={null}
-          >
-            <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
-          </TouchableOpacity>
-        </Block>
-        <Divider></Divider>
-      </View>
+      <Modal
+        isVisible={visibleModal}
+        onSwipeComplete={() => setVisibleModal(false)}
+        onBackdropPress={() => setVisibleModal(false)}
+        style={{ justifyContent: "flex-end", margin: 0 }}
+      >
+        <MapModal />
+      </Modal>
     </ScrollView>
   );
 };
@@ -109,10 +144,13 @@ const styles = StyleSheet.create({
     borderBottomWidth: 1,
     borderBottomColor: "#D8D9DB"
   },
-  content: {
-    marginTop: 10,
-    alignSelf: "center",
-    width: "90%"
+  listStyle: {
+    flex: 1,
+    paddingTop: 10
+  },
+  listItem: {
+    width: "90%",
+    marginLeft: 15
   },
   image: {
     height: 150,
