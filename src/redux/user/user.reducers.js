@@ -7,8 +7,10 @@ export default (state = INITIAL_STATE, action) => {
         ...state,
         ...action.payload
       };
-    case "LOGOUT_USER":
-      return { ...INITIAL_STATE };
+    case "LOGOUT_USER": {
+      console.log("this is working....");
+      return null;
+    }
     default:
       return state;
   }

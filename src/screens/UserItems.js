@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import { connect } from "react-redux";
 import Modal from "react-native-modal";
 import {
   View,
@@ -14,20 +15,26 @@ import { Text, Divider, Block, EmptyMessage, MapModal } from "../components";
 import httpServices from "../config/http-services";
 import { ENDPOINTS } from "../config/const";
 
-export default User = ({ navigation }) => {
+// _id -> this is user
+const UserItem = ({ navigation, _id, image }) => {
   const [items, setItems] = useState([]);
-  const [user] = useState(navigation.state.params);
+  const [userItem] = useState(navigation.state.params);
   const [isLoading, setLoading] = useState(false);
   const [visibleModal, setVisibleModal] = useState(false);
+  const [location, setLocation] = useState(null);
 
   useEffect(() => {
     getUser();
   }, []);
 
   getUser = async () => {
+    // If not from the user list page -
+    // User click from the side menu -
+    let userId = userItem ? userItem.id : _id;
+
     setLoading(true);
     try {
-      const { data } = await httpServices.get(`${ENDPOINTS.USER}/${user.id}`);
+      const { data } = await httpServices.get(`${ENDPOINTS.USER}/${userId}`);
       setItems(data.items);
     } catch (err) {
       console.log(err);
@@ -36,7 +43,20 @@ export default User = ({ navigation }) => {
     }
   };
 
+  deleteItem = async id => {
+    try {
+      const response = await httpServices.delete(
+        `${ENDPOINTS.DELETE_ITEM}/${id}`
+      );
+      console.log("Response", response);
+      getUser();
+    } catch (err) {
+      console.log("Error ->", err);
+    }
+  };
+
   renderPost = item => {
+    // console.log("Item ->", item)
     return (
       <View style={styles.listItem}>
         <Image
@@ -61,32 +81,42 @@ export default User = ({ navigation }) => {
         </Text>
 
         <Block row space="around" margin={[20, 0, 0, 0]}>
-          <TouchableOpacity
-            style={[styles.button, { marginLeft: -5 }]}
-            onPress={null}
-          >
-            <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
-          </TouchableOpacity>
-
+          {/* _id -> this is user */}
+          {_id === item.creator && (
+            <TouchableOpacity
+              style={[styles.button, { marginLeft: -5 }]}
+              onPress={null}
+            >
+              <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
+            </TouchableOpacity>
+          )}
           <TouchableOpacity
             style={[styles.buttonSecondary]}
-            onPress={() => setVisibleModal(true)}
+            onPress={() => {
+              setVisibleModal(true);
+              setLocation(item.location);
+            }}
           >
             <Text style={{ color: theme.colors.primary, fontWeight: "500" }}>
               Show Map
             </Text>
           </TouchableOpacity>
-          <TouchableOpacity
-            style={[styles.button, { marginRight: -5 }]}
-            onPress={null}
-          >
-            <Text style={{ color: "#FFF", fontWeight: "500" }}>Delete</Text>
-          </TouchableOpacity>
+          {/* _id -> this is user */}
+          {_id === item.creator && (
+            <TouchableOpacity
+              style={[styles.button, { marginRight: -5 }]}
+              onPress={() => deleteItem(item._id)}
+            >
+              <Text style={{ color: "#FFF", fontWeight: "500" }}>Delete</Text>
+            </TouchableOpacity>
+          )}
         </Block>
         <Divider></Divider>
       </View>
     );
   };
+
+  let userImage = userItem ? userItem.image : image;
 
   return (
     <ScrollView style={styles.container}>
@@ -98,12 +128,11 @@ export default User = ({ navigation }) => {
             color={theme.colors.gray}
           ></Ionicons>
         </TouchableOpacity>
-        <TouchableOpacity onPress={null}>
-          <Image
-            style={{ height: 35, width: 35, borderRadius: 35 / 2 }}
-            source={{ uri: `http://localhost:5000/${user.image}` }}
-          ></Image>
-        </TouchableOpacity>
+
+        <Image
+          style={{ height: 35, width: 35, borderRadius: 35 / 2 }}
+          source={{ uri: `http://localhost:5000/${userImage}` }}
+        ></Image>
       </View>
 
       <FlatList
@@ -113,7 +142,6 @@ export default User = ({ navigation }) => {
         ListEmptyComponent={
           <EmptyMessage isLoading={isLoading} errorText="No Data Available" />
         }
-        numColumns={2}
         renderItem={({ item }) => renderPost(item)}
         keyExtractor={item => item.id}
         numColumns={1}
@@ -126,11 +154,18 @@ export default User = ({ navigation }) => {
         onBackdropPress={() => setVisibleModal(false)}
         style={{ justifyContent: "flex-end", margin: 0 }}
       >
-        <MapModal />
+        <MapModal location={location} />
       </Modal>
     </ScrollView>
   );
 };
+
+const mapStateToProps = state => {
+  const user = state.user;
+  return user;
+};
+
+export default connect(mapStateToProps)(UserItem);
 
 const styles = StyleSheet.create({
   container: {

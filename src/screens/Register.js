@@ -1,29 +1,101 @@
 import React from "react";
+import { connect } from "react-redux";
+import { Formik } from "formik";
+import { theme } from "../constants";
 import {
   StyleSheet,
   Text,
   View,
-  TouchableOpacity,
   Image,
-  StatusBar
+  TouchableOpacity,
+  ActivityIndicator
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
 import * as Yup from "yup";
-import { Formik } from "formik";
-import { theme } from "../constants";
-import { InputField } from "../components/formik/InputField";
+import Constants from "expo-constants";
+import * as Permissions from "expo-permissions";
+import * as ImagePicker from "expo-image-picker";
 
-export default class RegisterScreen extends React.Component {
+import { InputField } from "../components/formik/InputField";
+import { storeUser } from "../redux/user/user.actions";
+import httpServices from "../config/http-services";
+import { ENDPOINTS } from "../config/const";
+
+class RegisterScreen extends React.Component {
   static navigationOptions = {
     header: null
   };
 
-  handleSignUp = () => {};
+  state = {
+    image: null,
+    imageResult: null
+  };
+
+  componentDidMount() {
+    this.getPhotoPermission();
+  }
+
+  getPhotoPermission = async () => {
+    if (Constants.platform.ios) {
+      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
+
+      if (status != "granted") {
+        alert(
+          "We need permission to use your camera roll if you'd like to include a photo."
+        );
+      }
+    }
+  };
+
+  pickImage = async () => {
+    let result = await ImagePicker.launchImageLibraryAsync({
+      mediaTypes: ImagePicker.MediaTypeOptions.Images,
+      allowsEditing: true,
+      aspect: [4, 3]
+    });
+
+    if (!result.cancelled) {
+      this.setState({ image: result.uri, imageResult: result });
+    }
+  };
+
+  handleSignUp = async (values, { setSubmitting }) => {
+    let localUri = this.state.imageResult.uri;
+    let filename = localUri.split("/").pop();
+    let match = /\.(\w+)$/.exec(filename);
+    let type = match ? `image/${match[1]}` : `image`;
+    let formData = new FormData();
+    formData.append("email", values.email);
+    formData.append("name", values.name);
+    formData.append("password", values.password);
+    formData.append("image", {
+      uri: localUri,
+      name: filename,
+      type
+    });
+
+    try {
+      const { data } = await httpServices.post(ENDPOINTS.SIGN_UP, formData);
+      const user = {
+        _id: data.user._id,
+        name: data.user.name,
+        email: data.user.email,
+        image: data.user.image
+      };
+      this.props.storeUser(user);
+      this.props.navigation.navigate("Loading");
+      Toast.show("Successfully Sign Up ");
+    } catch (err) {
+      Toast.show("Something went wrong ");
+      console.log("Err ->", err || err.response);
+    } finally {
+      setSubmitting(false);
+    }
+  };
 
   render() {
     return (
       <View style={styles.container}>
-        <StatusBar barStyle="light-content"></StatusBar>
         <Image
           source={require("../assets/authHeader.png")}
           style={{ marginTop: -116, marginLeft: -50 }}
@@ -54,13 +126,28 @@ export default class RegisterScreen extends React.Component {
           <Text
             style={styles.greeting}
           >{`Hello!\nSign up to get started.`}</Text>
-          <TouchableOpacity style={styles.avatar}>
-            <Ionicons
-              name="ios-add"
-              size={40}
-              color="#FFF"
-              style={{ marginTop: 6, marginLeft: 2 }}
-            ></Ionicons>
+          <TouchableOpacity style={styles.avatar} onPress={this.pickImage}>
+            {this.state.image && (
+              <Image
+                source={{
+                  uri: this.state.image ? this.state.image : undefined
+                }}
+                style={{
+                  width: 100,
+                  height: 100,
+                  margin: 5,
+                  borderRadius: 50
+                }}
+              ></Image>
+            )}
+            {!this.state.image && (
+              <Ionicons
+                name="ios-add"
+                size={40}
+                color="#FFF"
+                style={{ marginTop: 6, marginLeft: 2 }}
+              ></Ionicons>
+            )}
           </TouchableOpacity>
         </View>
 
@@ -70,10 +157,10 @@ export default class RegisterScreen extends React.Component {
             email: Yup.string()
               .email("Enter a valid email")
               .required("This field is required"),
-            username: Yup.string().required("This field is required"),
+            name: Yup.string().required("This field is required"),
             password: Yup.string().required("This field is required")
           })}
-          onSubmit={() => alert("this is working...")}
+          onSubmit={this.handleSignUp}
         >
           {props => (
             <>
@@ -81,7 +168,7 @@ export default class RegisterScreen extends React.Component {
                 <View>
                   <InputField
                     formikProps={props}
-                    formikKey="username"
+                    formikKey="name"
                     label="Your name"
                   />
                 </View>
@@ -102,11 +189,16 @@ export default class RegisterScreen extends React.Component {
 
               <TouchableOpacity
                 style={styles.button}
-                onPress={this.handleSignUp}
+                onPress={props.handleSubmit}
               >
-                <Text style={{ color: "#FFF", fontWeight: "500" }}>
-                  Sign up
-                </Text>
+                {props.isSubmitting && (
+                  <ActivityIndicator size="small" color="#fff" />
+                )}
+                {!props.isSubmitting && (
+                  <Text style={{ color: "#FFF", fontWeight: "500" }}>
+                    Sign up
+                  </Text>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity
@@ -129,6 +221,9 @@ export default class RegisterScreen extends React.Component {
     );
   }
 }
+
+export default connect(null, { storeUser })(RegisterScreen);
+
 const styles = StyleSheet.create({
   container: {
     flex: 1

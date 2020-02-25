@@ -4,9 +4,10 @@ import Toast from "react-native-tiny-toast";
 import {
   View,
   Text,
+  Image,
   StyleSheet,
   TouchableOpacity,
-  Image,
+  ActivityIndicator,
   LayoutAnimation
 } from "react-native";
 import { Ionicons } from "@expo/vector-icons";
@@ -26,15 +27,15 @@ class LoginScreen extends React.Component {
   handleLogin = async (values, { setSubmitting }) => {
     try {
       const { data } = await httpServices.post(ENDPOINTS.LOGIN, values);
-      console.log("this is working...", data);
       const user = {
         _id: data.user._id,
         name: data.user.name,
         email: data.user.email,
         image: data.user.image
       };
-      Toast.show("Successfully login");
       this.props.storeUser(user);
+      this.props.navigation.navigate("Loading");
+      Toast.show("Successfully login");
     } catch (err) {
       Toast.show("Invalid credentials");
       console.log("Error -> ", err);
@@ -111,13 +112,17 @@ class LoginScreen extends React.Component {
 
               <TouchableOpacity
                 style={styles.button}
-                // loading={props.isSubmitting}
                 disabled={props.isSubmitting}
                 onPress={props.handleSubmit}
               >
-                <Text style={{ color: "#FFF", fontWeight: "500" }}>
-                  Sign in
-                </Text>
+                {props.isSubmitting && (
+                  <ActivityIndicator size="small" color="#fff" />
+                )}
+                {!props.isSubmitting && (
+                  <Text style={{ color: "#FFF", fontWeight: "500" }}>
+                    Sign in
+                  </Text>
+                )}
               </TouchableOpacity>
 
               <TouchableOpacity

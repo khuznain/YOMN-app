@@ -40,7 +40,7 @@ export default HomeScreen = ({ navigation }) => {
   renderPost = item => {
     return (
       <TouchableWithoutFeedback
-        onPress={() => navigation.navigate("User", item)}
+        onPress={() => navigation.navigate("UserItems", item)}
       >
         <View style={styles.listItem}>
           <Image

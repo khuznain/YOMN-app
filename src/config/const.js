@@ -8,5 +8,6 @@ export const ENDPOINTS = {
   SIGN_UP: `${BASE_URL}/api/users/signup`,
   USERS: `${BASE_URL}/api/users`,
   USER: `${BASE_URL}/api/items/user`,
-  POST_ITEM: `${BASE_URL}/api/items`
+  POST_ITEM: `${BASE_URL}/api/items`,
+  DELETE_ITEM: `${BASE_URL}/api/items`
 };

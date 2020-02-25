@@ -9,8 +9,7 @@ import {
   Users,
   Loading,
   AddItem,
-  ItemList,
-  User
+  UserItems
 } from "../screens";
 import SideMenu from "./side-menu";
 
@@ -18,8 +17,7 @@ const DashboardStackNavigator = createStackNavigator(
   {
     Users,
     AddItem,
-    ItemList,
-    User
+    UserItems
   },
   {
     headerMode: "none",
@@ -64,7 +62,7 @@ export default createAppContainer(
       Auth: AuthStack
     },
     {
-      initialRouteName: "App"
+      initialRouteName: "Loading"
     }
   )
 );

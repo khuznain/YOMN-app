@@ -1,10 +1,11 @@
 import React from "react";
 import { View, Text, ActivityIndicator, StyleSheet } from "react-native";
 import { theme } from "../constants";
+import { connect } from "react-redux";
 
-export default class LoadingScreen extends React.Component {
+class LoadingScreen extends React.Component {
   componentDidMount() {
-    this.props.navigation.navigate("App");
+    this.props.navigation.navigate(this.props.user ? "App" : "Auth");
   }
 
   render() {
@@ -19,6 +20,13 @@ export default class LoadingScreen extends React.Component {
     );
   }
 }
+
+const mapStateToProps = state => {
+  const user = state.user;
+  return { user };
+};
+
+export default connect(mapStateToProps)(LoadingScreen);
 
 const styles = StyleSheet.create({
   container: {

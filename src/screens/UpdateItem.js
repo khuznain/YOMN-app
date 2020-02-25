@@ -21,7 +21,7 @@ import { InputField } from "../components/formik/InputField";
 import httpServices from "../config/http-services";
 import { ENDPOINTS } from "../config/const";
 
-class AddItem extends React.Component {
+class UpdateItem extends React.Component {
   state = {
     image: null,
     imageResult: null
@@ -188,7 +188,7 @@ const mapStateToProps = state => {
   return user;
 };
 
-export default connect(mapStateToProps)(AddItem);
+export default connect(mapStateToProps)(UpdateItem);
 
 const styles = StyleSheet.create({
   container: {
