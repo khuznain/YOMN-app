@@ -6,6 +6,7 @@ export const InputField = ({
   formikProps,
   formikKey,
   label,
+  value,
   inputStyle = {},
   ...rest
 }) => {
@@ -17,6 +18,7 @@ export const InputField = ({
         onChangeText={formikProps.handleChange(formikKey)}
         onBlur={formikProps.handleBlur(formikKey)}
         autoCapitalize="none"
+        value={value}
         placeholder={label}
         {...rest}
       />

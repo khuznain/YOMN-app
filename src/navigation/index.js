@@ -9,6 +9,7 @@ import {
   Users,
   Loading,
   AddItem,
+  UpdateItem,
   UserItems
 } from "../screens";
 import SideMenu from "./side-menu";
@@ -17,6 +18,7 @@ const DashboardStackNavigator = createStackNavigator(
   {
     Users,
     AddItem,
+    UpdateItem,
     UserItems
   },
   {

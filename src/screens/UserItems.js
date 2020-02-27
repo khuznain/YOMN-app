@@ -85,7 +85,7 @@ const UserItem = ({ navigation, _id, image }) => {
           {_id === item.creator && (
             <TouchableOpacity
               style={[styles.button, { marginLeft: -5 }]}
-              onPress={null}
+              onPress={() => navigation.navigate("UpdateItem", item)}
             >
               <Text style={{ color: "#FFF", fontWeight: "500" }}>Edit</Text>
             </TouchableOpacity>

@@ -7,13 +7,9 @@ import {
   StyleSheet,
   TouchableOpacity,
   ActivityIndicator,
-  ScrollView,
-  Image
+  ScrollView
 } from "react-native";
-import Constants from "expo-constants";
-import * as Permissions from "expo-permissions";
 import { Ionicons } from "@expo/vector-icons";
-import * as ImagePicker from "expo-image-picker";
 import * as Yup from "yup";
 import { Formik } from "formik";
 import { theme } from "../constants";
@@ -22,64 +18,19 @@ import httpServices from "../config/http-services";
 import { ENDPOINTS } from "../config/const";
 
 class UpdateItem extends React.Component {
-  state = {
-    image: null,
-    imageResult: null
-  };
-
-  componentDidMount() {
-    this.getPhotoPermission();
-  }
-
-  getPhotoPermission = async () => {
-    if (Constants.platform.ios) {
-      const { status } = await Permissions.askAsync(Permissions.CAMERA_ROLL);
-
-      if (status != "granted") {
-        alert(
-          "We need permission to use your camera roll if you'd like to include a photo."
-        );
-      }
-    }
-  };
-
   handlePost = async (values, { setSubmitting }) => {
-    let localUri = this.state.imageResult.uri;
-    let filename = localUri.split("/").pop();
-    let match = /\.(\w+)$/.exec(filename);
-    let type = match ? `image/${match[1]}` : `image`;
-    let formData = new FormData();
-    formData.append("title", values.title);
-    formData.append("description", values.description);
-    formData.append("address", values.address);
-    formData.append("creator", this.props._id);
-    formData.append("image", {
-      uri: localUri,
-      name: filename,
-      type
-    });
-
     try {
-      const response = await httpServices.post(ENDPOINTS.POST_ITEM, formData);
-      Toast.show("Successfully Added Item");
+      const response = await httpServices.patch(
+        `${ENDPOINTS.POST_ITEM}/${this.props.navigation.state.params._id}`,
+        values
+      );
+      Toast.show("Successfully Updated Item");
       console.log("Response ->", response);
     } catch (err) {
-      Toast.show("Something went wrong or issue with the address");
+      Toast.show("Something went wrong");
       console.log("Err ->", err || err.response);
     } finally {
       setSubmitting(false);
-    }
-  };
-
-  pickImage = async () => {
-    let result = await ImagePicker.launchImageLibraryAsync({
-      mediaTypes: ImagePicker.MediaTypeOptions.Images,
-      allowsEditing: true,
-      aspect: [4, 3]
-    });
-
-    if (!result.cancelled) {
-      this.setState({ image: result.uri, imageResult: result });
     }
   };
 
@@ -108,14 +59,13 @@ class UpdateItem extends React.Component {
 
         <Formik
           initialValues={{
-            title: "",
-            description: "",
-            address: ""
+            title: this.props.navigation.state.params.title || "",
+            description: this.props.navigation.state.params.description || ""
           }}
+          enableReinitialize={true}
           validationSchema={Yup.object().shape({
             title: Yup.string().required("This field is required"),
-            description: Yup.string().required("This field is required"),
-            address: Yup.string().required("This field is required")
+            description: Yup.string().required("This field is required")
           })}
           onSubmit={this.handlePost}
         >
@@ -124,6 +74,7 @@ class UpdateItem extends React.Component {
               <View>
                 <InputField
                   formikProps={props}
+                  value={props.values.title}
                   formikKey="title"
                   label="Title"
                 />
@@ -132,34 +83,9 @@ class UpdateItem extends React.Component {
                   formikProps={props}
                   formikKey="description"
                   label="Description"
+                  value={props.values.description}
                   inputStyle={{ height: 100 }}
                 />
-
-                <InputField
-                  formikProps={props}
-                  formikKey="address"
-                  label="Address"
-                />
-
-                <TouchableOpacity
-                  style={styles.imageContainer}
-                  onPress={this.pickImage}
-                >
-                  <Ionicons
-                    name="md-camera"
-                    size={32}
-                    color={theme.colors.primary}
-                  ></Ionicons>
-
-                  <View style={styles.image}>
-                    <Image
-                      source={{
-                        uri: this.state.image ? this.state.image : undefined
-                      }}
-                      style={{ width: "100%", height: "100%" }}
-                    ></Image>
-                  </View>
-                </TouchableOpacity>
 
                 <TouchableOpacity
                   style={styles.button}

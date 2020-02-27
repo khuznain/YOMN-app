@@ -5,5 +5,15 @@ import Users from "./Users";
 import Loading from "./Loading";
 import AddItem from "./AddItem";
 import UserItems from "./UserItems";
+import UpdateItem from "./UpdateItem";
 
-export { Login, Register, Welcome, Users, UserItems, Loading, AddItem };
+export {
+  Login,
+  Register,
+  Welcome,
+  Users,
+  UserItems,
+  Loading,
+  AddItem,
+  UpdateItem
+};
