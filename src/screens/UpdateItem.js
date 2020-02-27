@@ -25,6 +25,7 @@ class UpdateItem extends React.Component {
         values
       );
       Toast.show("Successfully Updated Item");
+      this.props.navigation.navigate("Users");
       console.log("Response ->", response);
     } catch (err) {
       Toast.show("Something went wrong");
