@@ -14,7 +14,7 @@ import {
 import httpServices from "../config/http-services";
 import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../constants";
-import { ENDPOINTS } from "../config/const";
+import { ENDPOINTS, BASE_URL } from "../config/const";
 
 export default HomeScreen = ({ navigation }) => {
   const [users, setUsers] = useState([]);
@@ -45,7 +45,7 @@ export default HomeScreen = ({ navigation }) => {
         <View style={styles.listItem}>
           <Image
             source={{
-              uri: `http://localhost:5000/${item.image}`
+              uri: `${BASE_URL}/${item.image}`
             }}
             style={styles.avatar}
           />

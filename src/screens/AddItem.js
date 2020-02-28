@@ -62,6 +62,7 @@ class AddItem extends React.Component {
     try {
       const response = await httpServices.post(ENDPOINTS.POST_ITEM, formData);
       Toast.show("Successfully Added Item");
+      this.props.navigation.navigate("Users");
       console.log("Response ->", response);
     } catch (err) {
       Toast.show("Something went wrong or issue with the address");

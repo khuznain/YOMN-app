@@ -6,7 +6,7 @@
 
 // export const BASE_URL = `http://localhost:5000`;
 
-export const BASE_URL = `http://192.168.10.9:5000`;
+export const BASE_URL = `http://192.168.10.4:5000`;
 
 export const ENDPOINTS = {
   LOGIN: `${BASE_URL}/api/users/login`,

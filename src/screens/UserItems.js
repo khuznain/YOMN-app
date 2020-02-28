@@ -13,7 +13,7 @@ import { Ionicons } from "@expo/vector-icons";
 import { theme } from "../constants";
 import { Text, Divider, Block, EmptyMessage, MapModal } from "../components";
 import httpServices from "../config/http-services";
-import { ENDPOINTS } from "../config/const";
+import { ENDPOINTS, BASE_URL } from "../config/const";
 
 // _id -> this is user
 const UserItem = ({ navigation, _id, image }) => {
@@ -62,7 +62,7 @@ const UserItem = ({ navigation, _id, image }) => {
         <Image
           style={styles.image}
           source={{
-            uri: `http://localhost:5000/${item.image}`
+            uri: `${BASE_URL}/${item.image}`
           }}
         />
 
@@ -131,7 +131,7 @@ const UserItem = ({ navigation, _id, image }) => {
 
         <Image
           style={{ height: 35, width: 35, borderRadius: 35 / 2 }}
-          source={{ uri: `http://localhost:5000/${userImage}` }}
+          source={{ uri: `${BASE_URL}/${userImage}` }}
         ></Image>
       </View>
 
